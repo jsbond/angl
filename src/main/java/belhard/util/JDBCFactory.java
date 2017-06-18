@@ -1,38 +1,36 @@
 package belhard.util;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class JDBCFactory {
-    public static Connection getConnection() {
-        Connection connection = null;
+	private static Logger logger = Logger.getLogger(JDBCFactory.class);
+	private static LocalProperties properties = new LocalProperties();
+	private static final String DB_URL = "db.url";
+	private static final String DB_LOGIN = "db.login";
+	private static final String DB_PASSWORD = "db.pass";
+	private static final String SQL_DRIVER = "db.mysql.driver";
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Where is your MySQL JDBC Driver?");
-            e.printStackTrace();
-            return null;
-        }
+	public static Connection getConnection() {
+		try {
+			Connection connection;
+			Class.forName(properties.get(SQL_DRIVER));
+			logger.info("MySQL JDBC Driver Registered!");
 
-        System.out.println("MySQL JDBC Driver Registered!");
+			connection = DriverManager
+					.getConnection(properties.get(DB_URL), properties.get(DB_LOGIN), properties.get(DB_PASSWORD));
 
-        try {
-            connection = DriverManager
-                    .getConnection("jdbc:mysql://localhost:3306/angl","root", "olala");
-
-        } catch (SQLException e) {
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-            return null;
-        }
-
-        if (connection != null) {
-            System.out.println("You made it, take control your database now!");
-        } else {
-            System.out.println("Failed to make connection!");
-        }
-        return connection;
-    }
+			logger.info("connection to database created");
+			return connection;
+		} catch (ClassNotFoundException e) {
+			logger.error("MySQL driver is not loaded");
+			return null;
+		} catch (SQLException e) {
+			logger.error("Connection to database failed.");
+			return null;
+		}
+	}
 }

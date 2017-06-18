@@ -3,6 +3,9 @@ package belhard.controller;
 import belhard.annotation.RequestMapping;
 import belhard.entity.User;
 import belhard.service.UserService;
+import belhard.web.ModelAndView;
+import belhard.web.View;
+import belhard.web.response.UserDTO;
 
 /**
  * Created by Lenovo on 08.06.2017.
@@ -15,12 +18,18 @@ public class UserController {
 	}
 
 	@RequestMapping(url = "users/find")
-	public User findUserById(String id) {
-		return userService.findUserById(id);
+	public ModelAndView findUserById(String id) {
+		ModelAndView view = new ModelAndView(View.USER);
+		User user = userService.findUserById(id);
+		view.addParameter("user", user);
+		return view;
 	}
 
-	@RequestMapping(url = "users/create")
-	public String createUser(String name, String age) {
-		return userService.saveUser(name, age);
+	@RequestMapping(url = "users/signUp")
+	public ModelAndView signUp(String name, String email, String age) {
+		ModelAndView view = new ModelAndView(View.MAIN);
+		UserDTO user = userService.saveUser(name, email, age);
+		view.addParameter("user", user);
+		return view;
 	}
 }

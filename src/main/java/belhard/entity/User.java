@@ -9,6 +9,8 @@ public class User implements Serializable {
 	private long id;
 	private String name;
 	private Integer age;
+	private String email;
+	private String password;
 
 	public long getId() {
 		return id;
@@ -34,6 +36,22 @@ public class User implements Serializable {
 		this.age = age;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -41,16 +59,14 @@ public class User implements Serializable {
 
 		User user = (User) o;
 
-		if (id != user.id) return false;
-		if (age != user.age) return false;
-		return name != null ? name.equals(user.name) : user.name == null;
+		return email != null ? email.equals(user.email) : user.email == null;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = (int) (id ^ (id >>> 32));
-		result = 31 * result + (name != null ? name.hashCode() : 0);
-		result = 31 * result + age;
+
+		result = 31 * result + (email != null ? email.hashCode() : 0);
 		return result;
 	}
 
@@ -60,6 +76,7 @@ public class User implements Serializable {
 				"id=" + id +
 				", name='" + name + '\'' +
 				", age=" + age +
+				", email='" + email + '\'' +
 				'}';
 	}
 }

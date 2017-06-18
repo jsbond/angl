@@ -2,7 +2,7 @@ package belhard.service;
 
 import belhard.dao.UserDAO;
 import belhard.entity.User;
-import belhard.util.Validator;
+import belhard.web.response.UserDTO;
 
 import static belhard.util.Validator.*;
 
@@ -20,12 +20,14 @@ public class UserService {
 		return userDAO.find(validateLong(id));
 	}
 
-	public String saveUser(String name, String age) {
-		User user = new User();
-		user.setName(name);
-		user.setAge(validateInt(age));
+	public UserDTO saveUser(String name, String email, String age) {
+		User dto = new User();
+		dto.setName(name);
+		dto.setAge(validateInt(age));
 
-		boolean result = userDAO.save(user);
-		return result ? "User created" : "User not created";
+		userDAO.save(dto);
+
+		User user = userDAO.find(email);
+		return new UserDTO(user);
 	}
 }

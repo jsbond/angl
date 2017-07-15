@@ -11,12 +11,19 @@ public class ModelAndView {
 	private Map<String, Object> parameters = new HashMap<>();
 	private int status;
 
+	public ModelAndView() {
+	}
+
 	public ModelAndView(View view) {
 		this.view = view;
 	}
 
 	public View getView() {
 		return view;
+	}
+
+	public void setView(View view) {
+		this.view = view;
 	}
 
 	public void addParameter(String name, Object value) {

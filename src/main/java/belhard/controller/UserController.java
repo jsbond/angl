@@ -37,8 +37,13 @@ public class UserController implements Controller{
 
 	@RequestMapping(url = "/users/login", method = HttpMethod.POST)
 	public ModelAndView login(String email, String password) {
-		ModelAndView view = new ModelAndView(View.MAIN);
+		ModelAndView view = new ModelAndView(View.LOGIN);
 		UserDTO userDTO = userService.login(email, password);
+
+		if (userDTO != null) {
+			view.setView(View.MAIN);
+			view.addParameter("user", userDTO);
+		}
 		return view;
 	}
 

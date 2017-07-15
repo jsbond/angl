@@ -9,6 +9,11 @@ import java.util.Map;
 
 public class AppServlet extends HttpServlet {
 	@Override
+	public void init() throws ServletException {
+		super.init();
+	}
+
+	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		super.service(req, resp);
 
@@ -19,5 +24,10 @@ public class AppServlet extends HttpServlet {
 		Dispatcher dispatcher = Dispatcher.getInstance();
 		dispatcher.dispatch(requestURI, method, parameterMap);
 
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
 	}
 }

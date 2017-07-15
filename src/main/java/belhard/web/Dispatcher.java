@@ -47,13 +47,12 @@ public class Dispatcher {
 		Target target = getTargetForInvoke(url, httpMethod);
 		fillTargetByParameters(target, parametersMap);
 
-		Object result = invoker.invoke(target);
+		Object result = invoker.invoke(target, target.params);
 		return result.getClass().cast(result).toString();
 	}
 
 	private void fillTargetByParameters(Target target, Map<String, String[]> parametersMap) {
 		Parameter[] parameters = target.method.getParameters();
-		target.params = new String[parametersMap.values().size()];
 
 		for (int i = 0; i < parameters.length; i++) {
 			String[] strings = parametersMap.get(parameters[i].getName());
@@ -73,6 +72,7 @@ public class Dispatcher {
 
 					if (requestedHttpMethod == current.method() && StringUtils.equals(requestedUrl, current.url())) {
 						target = new Target(controller, method);
+						target.params = new String[method.getParameterCount()];
 						break;
 					}
 				}
@@ -85,7 +85,7 @@ public class Dispatcher {
 	}
 
 	private static class Invoker {
-		private Object invoke(Target target) {
+		private Object invoke(Target target, Object... params) {
 			try {
 				target.method.setAccessible(true);
 
@@ -99,7 +99,7 @@ public class Dispatcher {
 	private static class Target {
 		private Controller controller;
 		private Method method;
-		private String[] params;
+		private Object[] params;
 
 		Target(Controller controller, Method method) {
 			this.controller = controller;

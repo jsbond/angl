@@ -27,13 +27,12 @@ public class Dispatcher {
 	private final List<Controller> controllers;
 	private Invoker invoker = new Invoker();
 	private static Dispatcher dispatcher;
-	private Pattern slashPattern = Pattern.compile("[/\\\\]");
 
 	private Dispatcher() {
 		controllers = ImmutableList.<Controller>builder()
 				.add(new UserController(new UserService(new UserDAO())))
 				.build();
-		}
+	}
 
 	public static Dispatcher getInstance() {
 		if (dispatcher == null) {
@@ -42,13 +41,16 @@ public class Dispatcher {
 		return dispatcher;
 	}
 
-	public String dispatch(String url, String method, Map<String, String[]> parametersMap) {
+	public ModelAndView dispatch(String url, String method, Map<String, String[]> parametersMap) {
 		HttpMethod httpMethod = HttpMethod.valueOf(method);
 		Target target = getTargetForInvoke(url, httpMethod);
-		fillTargetByParameters(target, parametersMap);
+		if (target != null) {
+			fillTargetByParameters(target, parametersMap);
 
-		Object result = invoker.invoke(target, target.params);
-		return result.getClass().cast(result).toString();
+			Object result = invoker.invoke(target);
+			return (ModelAndView) result;
+		}
+		return new ModelAndView(HttpStatus.PAGE_NOT_FOUND);
 	}
 
 	private void fillTargetByParameters(Target target, Map<String, String[]> parametersMap) {
@@ -56,7 +58,9 @@ public class Dispatcher {
 
 		for (int i = 0; i < parameters.length; i++) {
 			String[] strings = parametersMap.get(parameters[i].getName());
-			target.params[i] = strings[0];
+			if (strings != null) {
+				target.params[i] = strings[0];
+			}
 		}
 	}
 
@@ -85,7 +89,7 @@ public class Dispatcher {
 	}
 
 	private static class Invoker {
-		private Object invoke(Target target, Object... params) {
+		private Object invoke(Target target) {
 			try {
 				target.method.setAccessible(true);
 

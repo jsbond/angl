@@ -14,6 +14,11 @@ public class ModelAndView {
 	public ModelAndView() {
 	}
 
+	public ModelAndView(int status) {
+		view = View.ERROR;
+		this.status = status;
+	}
+
 	public ModelAndView(View view) {
 		this.view = view;
 	}

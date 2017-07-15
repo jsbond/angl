@@ -6,6 +6,7 @@ package belhard.web;
 public enum View {
 	LOGIN("login"),
 	MAIN("main"),
+	ERROR("error"),
 	USER("user");
 
 	private String name;

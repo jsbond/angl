@@ -6,9 +6,9 @@
     <div class="login">
         <h1>Admin part</h1>
 
-        <form action="http://localhost:8080/users" method="POST">
+        <form action="http://localhost:8080/users/login" method="POST">
 
-            <p><input name = "name" type="text" value="" placeholder="Username or Email"></p>
+            <p><input name = "email" type="text" value="" placeholder="Username or Email"></p>
             <p><input name = "password" type="password" value="" placeholder="Password"></p>
             <p class="remember_me">
                 <label>

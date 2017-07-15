@@ -1,8 +1,10 @@
 package belhard.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -16,7 +18,8 @@ public class LocalProperties {
 	}
 
 	private void load() {
-		try (FileInputStream fis = new FileInputStream("src/main/resources/local.properties")){
+		String path = LocalProperties.class.getClassLoader().getResource("local.properties").getPath();
+		try (FileInputStream fis = new FileInputStream(path)) {
 			properties = new Properties();
 			properties.load(fis);
 		} catch (IOException ex) {

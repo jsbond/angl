@@ -8,7 +8,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnit44Runner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -22,6 +26,21 @@ public class UserServiceTest {
 
 	@InjectMocks
 	private UserService userService;
+
+	@Spy
+	private List<Integer> ints = new ArrayList<>();
+
+	@Test
+	public void test() {
+		ints.add(1);
+		ints.add(2);
+		ints.add(3);
+		Mockito.when(ints.size()).thenReturn(100);
+
+		Assert.assertEquals(100, ints.size());
+		ints.get(0);
+
+	}
 
 	@Test
 	public void findUserById() throws Exception {
@@ -40,6 +59,8 @@ public class UserServiceTest {
 		Assert.assertEquals(100L, actual.getId());
 		Assert.assertEquals("1", actual.getName());
 		Assert.assertEquals(new Integer(12), actual.getAge());
+
+		Mockito.verify(userDAO, Mockito.times(1)).find(100);
 	}
 
 	@Test

@@ -70,14 +70,15 @@ public class UserDAO extends AbstractDAO<User> {
 		try (PreparedStatement st = connection.prepareStatement(SELECT_BY_EMAIL_QUERY)) {
 			st.setString(1, email);
 			ResultSet rs = st.executeQuery();
-			User user = new User();
 
 			while (rs.next()) {
+				User user = new User();
 				user.setId(rs.getLong(1));
 				user.setName(rs.getString(2));
 				user.setAge(rs.getInt(3));
+				return user;
 			}
-			return user;
+			return null;
 		} catch (SQLException e) {
 			logger.error("Can't find user with email: " + email);
 			return null;

@@ -5,7 +5,7 @@
     <groupId>belhard</groupId>
     <artifactId>angl</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>angl</name>
     <url>http://maven.apache.org</url>

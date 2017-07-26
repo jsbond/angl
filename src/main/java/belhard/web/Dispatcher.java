@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * Dispatcher keeps all controller instances.
  */
 public class Dispatcher {
-	private final List<Controller> controllers;
+	private List<Controller> controllers;
 	private Invoker invoker = new Invoker();
 	private static Dispatcher dispatcher;
 

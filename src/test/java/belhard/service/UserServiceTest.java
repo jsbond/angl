@@ -9,13 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnit44Runner;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Lenovo on 08.06.2017.
@@ -39,8 +36,14 @@ public class UserServiceTest {
 		Mockito.when(ints.size()).thenReturn(100);
 
 		Assert.assertEquals(100, ints.size());
-		ints.get(0);
+	}
 
+	@Test
+	public void test3() {
+		String x = "Hello";
+		StringBuilder hello = new StringBuilder("Hello");
+
+		System.out.println(x.equals(hello));
 	}
 
 	@Test
@@ -54,7 +57,7 @@ public class UserServiceTest {
 		Mockito.when(userDAO.find(100L)).thenReturn(user);
 
 		//then
-		User actual = userService.findUserById("100");
+		User actual = userService.find("100");
 
 		//verify
 		Assert.assertEquals(100L, actual.getId());

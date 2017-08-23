@@ -4,14 +4,14 @@
          id="angl" version="3.0">
 
     <!--filters-->
-    <!--<filter>-->
-        <!--<filter-name>CounterFilter</filter-name>-->
-        <!--<filter-class>CounterFilter</filter-class>-->
-    <!--</filter>-->
-    <!--<filter-mapping>-->
-        <!--<filter-name>CounterFilter</filter-name>-->
-        <!--<url-pattern>/*</url-pattern>-->
-    <!--</filter-mapping>-->
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>belhard.web.filter.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <!--servlets-->
     <servlet>
@@ -22,4 +22,6 @@
         <servlet-name>api</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+
 </web-app>

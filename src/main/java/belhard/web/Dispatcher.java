@@ -9,12 +9,16 @@ import belhard.service.UserService;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,11 +45,11 @@ public class Dispatcher {
 		return dispatcher;
 	}
 
-	public ModelAndView dispatch(String url, String method, Map<String, String[]> parametersMap) {
+	public ModelAndView dispatch(String url, String method, Map<String, String[]> parametersMap, HttpServletRequest req) {
 		HttpMethod httpMethod = HttpMethod.valueOf(method);
 		Target target = getTargetForInvoke(url, httpMethod);
 		if (target != null) {
-			fillTargetByParameters(target, parametersMap);
+			fillTargetByParameters(target, parametersMap, req);
 
 			Object result = invoker.invoke(target);
 			return (ModelAndView) result;
@@ -53,15 +57,16 @@ public class Dispatcher {
 		return new ModelAndView(HttpStatus.PAGE_NOT_FOUND);
 	}
 
-	private void fillTargetByParameters(Target target, Map<String, String[]> parametersMap) {
-		Parameter[] parameters = target.method.getParameters();
+	private void fillTargetByParameters(Target target, Map<String, String[]> stringParametersMap,
+	                                    HttpServletRequest req) {
+		HashMap<String, Object> parametersMap = new HashMap<>();
+		stringParametersMap.forEach((k, v) -> parametersMap.put(k, v[0]));
+		parametersMap.put("request", req);
 
-		for (int i = 0; i < parameters.length; i++) {
-			String[] strings = parametersMap.get(parameters[i].getName());
-			if (strings != null) {
-				target.params[i] = strings[0];
-			}
-		}
+		Arrays.stream(target.method.getParameters())
+				.map(e -> parametersMap.get(e.getName()))
+				.filter(Objects::nonNull)
+				.forEach(e -> target.params.add(e));
 	}
 
 	private Target getTargetForInvoke(String requestedUrl, HttpMethod requestedHttpMethod) {
@@ -76,7 +81,6 @@ public class Dispatcher {
 
 					if (requestedHttpMethod == current.method() && StringUtils.equals(requestedUrl, current.url())) {
 						target = new Target(controller, method);
-						target.params = new String[method.getParameterCount()];
 						break;
 					}
 				}
@@ -93,7 +97,7 @@ public class Dispatcher {
 			try {
 				target.method.setAccessible(true);
 
-				return target.method.invoke(target.controller, target.params);
+				return target.method.invoke(target.controller, target.params.toArray());
 			} catch (Exception e) {
 				throw new IllegalRequestException(e.getMessage());
 			}
@@ -103,7 +107,7 @@ public class Dispatcher {
 	private static class Target {
 		private Controller controller;
 		private Method method;
-		private Object[] params;
+		private List<Object> params = new ArrayList<>();
 
 		Target(Controller controller, Method method) {
 			this.controller = controller;

@@ -5,26 +5,29 @@ import belhard.entity.User;
 import belhard.service.UserService;
 import belhard.web.Controller;
 import belhard.web.HttpMethod;
+import belhard.web.HttpStatus;
 import belhard.web.ModelAndView;
 import belhard.web.View;
 import belhard.web.response.UserDTO;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import java.util.regex.Pattern;
+
+import static belhard.web.View.LOGIN;
+import static belhard.web.View.MAIN;
+
 /**
  * Created by Lenovo on 08.06.2017.
  */
-public class UserController implements Controller{
+public class UserController implements Controller {
 	private UserService userService;
-
+	public static final String YEAR = "grhge";
+	
 	public UserController(UserService userService) {
 		this.userService = userService;
-	}
-
-	@RequestMapping(url = "/users/find", method = HttpMethod.GET)
-	public ModelAndView findUserById(String id) {
-		ModelAndView view = new ModelAndView(View.USER);
-		User user = userService.findUserById(id);
-		view.addParameter("user", user);
-		return view;
 	}
 
 	@RequestMapping(url = "/users/signUp", method = HttpMethod.POST)
@@ -35,14 +38,23 @@ public class UserController implements Controller{
 		return view;
 	}
 
-	@RequestMapping(url = "/users/login", method = HttpMethod.POST)
-	public ModelAndView login(String email, String password) {
-		ModelAndView view = new ModelAndView(View.LOGIN);
-		UserDTO userDTO = userService.login(email, password);
+	@RequestMapping(url = "/users/login", method = HttpMethod.GET)
+	public ModelAndView getLoginPage() {
+		return new ModelAndView(LOGIN);
+	}
 
-		if (userDTO != null) {
-			view.setView(View.MAIN);
-			view.addParameter("user", userDTO);
+	@RequestMapping(url = "/users/login", method = HttpMethod.POST)
+	public ModelAndView login(HttpServletRequest request, String email, String password) {
+		ModelAndView view = new ModelAndView(LOGIN);
+		UserDTO user = userService.login(email, password);
+
+		if (user != null) {
+			view = new ModelAndView(MAIN);
+			view.addParameter("user", user);
+
+			HttpSession session = request.getSession(true);
+			session.setAttribute("userId", user.getId());
+			session.setAttribute("userName", user.getName());
 		}
 		return view;
 	}

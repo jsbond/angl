@@ -9,10 +9,13 @@
 <body>
 
     <div class="login">
-        <h1>приветствую тебя, ${requestScope.user.name}</h1>
-
-
-
+        <h1>приветствую тебя, ${sessionScope.userName}</h1>
+    </div>
+    <div>
+        <h1>Пользователи</h1>
+        <c:forEach var="usr" items="${users}">
+            <p>${usr.name}</p>
+        </c:forEach>
     </div>
 
 

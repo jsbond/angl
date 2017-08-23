@@ -17,7 +17,7 @@ public class UserService {
 		this.userDAO = userDAO;
 	}
 
-	public User findUserById(String id) {
+	public User find(String id) {
 		return userDAO.find(validateLong(id));
 	}
 
